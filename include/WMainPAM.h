@@ -99,7 +99,7 @@ class WMainPAM{
   TMultiGraph      *Exponentes;
   TEllipse         *Lentil;
   TArrow           *ArrowPush, *ArrowDrag, *ArrowWeight, *ArrowForcing;
-  TGraph           *TGraphPhase, *TGraphPoincare, *TGraphLyapunov, *TGraphL1, *TGraphL2;
+  TGraph           *TGraphPhase, *TGraphPoincare, *TGraphLyapunov, *TGraphL1, *TGraphL2, *TGraphL3;
   TTimer           *Cont;
   TLine            *Rope;
   Int_t            IsActive;
@@ -114,13 +114,16 @@ class WMainPAM{
   
   Double_t SeigenvalOmega;
   Double_t SeigenvalTheta;
-  
+  Double_t SeigenvalZ;
+
   Double_t MeigenvalOmega;
   Double_t MeigenvalTheta;
+  Double_t MeigenvalZ;
   
   Double_t T[200]      = {0.};
   Double_t LOmega[200] = {0.};
   Double_t LTheta[200] = {0.};
+  Double_t LZ[200]     = {0.};
   
   Double_t Omega_F = 0.;
   Double_t Omega   = 0.;
