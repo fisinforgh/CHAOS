@@ -828,6 +828,7 @@ void WMainPAM::TBClearCliked(){
     T[j]      = 0.;
     LOmega[j] = 0.;
     LTheta[j] = 0.;
+    LZ[j]     = 0.;
   }
 
   j = 0;
@@ -845,15 +846,17 @@ void WMainPAM::DoDraw(){
     
     I = GetMass()*(TMath::Power(GetLength(), 2.) + (2./5.)*TMath::Power(GetRadius(), 2.));
     
-    Alpha = (((4./3.)*GetRho()*TMath::Pi()*TMath::Power(R, 3.) - GetMass())*GetG()*GetLength())/I;
+    Alpha = (((4./3.)*GetRho()*TMath::Pi()*TMath::Power(R, 3.) - GetMass())*GetG()*GetLength());
     Beta  = ((1./2.)*GetC()*GetRho()*TMath::Pi()*TMath::Power(GetRadius(), 2.)
-	     *TMath::Power(GetLength(), 3.))/I;
+	     *TMath::Power(GetLength(), 3.));
+    Gamma = (GetF()*GetLength());
     //=======================================================================================================
     // JACOBIAN MATRIX
     //=======================================================================================================
-    TMatrixD J(2, 2);
-    J(0, 0) = -2.*Beta*TMath::Abs(Omega)  ; J(0, 1) = Alpha*TMath::Cos(Theta);
-    J(1, 0) = 1.;                           J(1, 1) = 0.;
+    TMatrixD J(3, 3);
+    J(0, 0) = -2.*Beta*TMath::Abs(Omega); J(0, 1) = Alpha*TMath::Cos(Theta); J(0, 2) = Gamma*TMath::Cos(Z);
+    J(1, 0) = 1./I;                         J(1, 1) = 0.;                      J(1, 2) = 0.;
+    J(2, 0) = 0.;                         J(2, 1) = 0.;                      J(2, 2) = 0.;
     //-------------------------------------------------------------------------------------------------------
     //CALCULATION OF OWN VALUES
     //-------------------------------------------------------------------------------------------------------
@@ -862,11 +865,13 @@ void WMainPAM::DoDraw(){
     
     SeigenvalOmega   += eigenval(0);
     SeigenvalTheta   += eigenval(1);
+    SeigenvalZ       += eigenval(2);
     //-------------------------------------------------------------------------------------------------------
     //AVERAGE
     //-------------------------------------------------------------------------------------------------------
     MeigenvalOmega   = SeigenvalOmega/(Double_t)n;
     MeigenvalTheta   = SeigenvalTheta/(Double_t)n;
+    MeigenvalZ       = SeigenvalZ/(Double_t)n;
   }
   
   NumEntOmega -> SetNumber(Omega);
@@ -881,7 +886,7 @@ void WMainPAM::DoDraw(){
   T[j%200]      = Time;
   LOmega[j%200] = MeigenvalOmega;
   LTheta[j%200] = MeigenvalTheta;
-  
+  LZ[j%200]     = MeigenvalZ;
   j ++;
   
   CanvasFase -> cd();  
@@ -933,7 +938,7 @@ void WMainPAM::DoDraw(){
   Exponentes -> GetYaxis() -> SetLabelSize(0.05);
 
   TGraphL1 = new TGraph(200, T, LOmega);
-  TGraphL1 -> SetTitle("#lambda_{#omega}");
+  TGraphL1 -> SetTitle("#lambda_{L}");
   TGraphL1 -> SetMarkerColor(4);
   TGraphL1 -> SetMarkerStyle(20);
   TGraphL1 -> SetMarkerSize(0.5);
@@ -948,9 +953,18 @@ void WMainPAM::DoDraw(){
   TGraphL2 -> GetXaxis() -> SetLabelSize(0.05);
   TGraphL2 -> GetYaxis() -> SetLabelSize(0.05);
 
+  TGraphL3 = new TGraph(200, T, LZ);
+  TGraphL3 -> SetTitle("#lambda_{z}");
+  TGraphL3 -> SetMarkerColor(6);
+  TGraphL3 -> SetMarkerStyle(20);
+  TGraphL3 -> SetMarkerSize(0.5);
+  TGraphL3 -> GetXaxis() -> SetLabelSize(0.05);
+  TGraphL3 -> GetYaxis() -> SetLabelSize(0.05);
+
   Exponentes -> Add(TGraphL1);
   Exponentes -> Add(TGraphL2);
-  
+  Exponentes -> Add(TGraphL3);
+
   Exponentes -> Draw("ap");
   CanvasLyapu -> BuildLegend();
   CanvasLyapu -> Modified();
@@ -958,6 +972,7 @@ void WMainPAM::DoDraw(){
     
   delete TGraphL1;
   delete TGraphL2;
+  delete TGraphL3;
   delete Exponentes;
   
   DrawSystem(); 
