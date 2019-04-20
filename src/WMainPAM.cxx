@@ -848,7 +848,7 @@ void WMainPAM::DoDraw(){
     
     Alpha = (((4./3.)*GetRho()*TMath::Pi()*TMath::Power(R, 3.) - GetMass())*GetG()*GetLength());
     Beta  = ((1./2.)*GetC()*GetRho()*TMath::Pi()*TMath::Power(GetRadius(), 2.)
-	     *TMath::Power(GetLength(), 3.));
+	     *TMath::Power(GetLength(), 3.))/I;
     Gamma = (GetF()*GetLength());
     //=======================================================================================================
     // JACOBIAN MATRIX
