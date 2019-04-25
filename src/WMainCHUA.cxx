@@ -799,11 +799,10 @@ void WMainCHUA::DoDraw(){
   TGraph2DAttractor = new TGraph2D(500, V1_Matrix, V2_Matrix, I3_Matrix);
   TGraph2DAttractor -> SetTitle("Attractor; V_{1}(V); V_{2}(V); I_{3}(A)");
   TGraph2DAttractor -> SetMarkerColor(2);
-  TGraph2DAttractor -> SetMarkerSize(0.2);
-  TGraph2DAttractor -> SetMarkerStyle(1);
+  TGraph2DAttractor -> SetMarkerStyle(20);
   TGraph2DAttractor -> GetXaxis() -> SetLabelSize(0.05);
   TGraph2DAttractor -> GetYaxis() -> SetLabelSize(0.05);
-  TGraph2DAttractor -> Draw();
+  TGraph2DAttractor -> Draw("pcol");
   CanvasAttractor -> Modified();
   CanvasAttractor -> Update();
   delete TGraph2DAttractor;
